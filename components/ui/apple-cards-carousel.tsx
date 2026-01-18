@@ -15,9 +15,10 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
 import Image, { ImageProps } from "next/image";
 import { useOutsideClick } from "@/hooks/use-outside-click";
+import { once } from "process";
 
 interface CarouselProps {
-  items: JSX.Element[];
+  items: React.ReactNode[];
   initialScroll?: number;
 }
 
@@ -98,14 +99,14 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
         >
           <div
             className={cn(
-              "absolute right-0 z-[1000] h-auto w-[5%] overflow-hidden bg-gradient-to-l"
+              "absolute right-0 z-[1000] h-auto w-[5%] overflow-hidden bg-gradient-to-l",
             )}
           ></div>
 
           <div
             className={cn(
               "flex flex-row justify-start gap-4 pl-4",
-              "mx-auto max-w-7xl" // remove max-w-4xl if you want the carousel to span the full width of its container
+              "mx-auto max-w-7xl", // remove max-w-4xl if you want the carousel to span the full width of its container
             )}
           >
             {items.map((item, index) => (
@@ -114,16 +115,16 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
                   opacity: 0,
                   y: 20,
                 }}
-                animate={{
+                whileInView={{
                   opacity: 1,
                   y: 0,
-                  transition: {
-                    duration: 0.5,
-                    delay: 0.2 * index,
-                    ease: "easeOut",
-                    once: true,
-                  },
                 }}
+                transition={{
+                  duration: 0.5,
+                  delay: 0.2 * index,
+                  ease: "easeOut",
+                }}
+                viewport={{ once: true }} // ✅ CORRECT PLACE
                 key={"card" + index}
                 className="rounded-3xl last:pr-[5%] md:last:pr-[33%]"
               >
@@ -288,7 +289,10 @@ export const BlurImage = ({
   };
 
   return (
-    <div className={cn("relative", className)} style={fill ? { position: 'absolute', inset: 0 } : undefined}>
+    <div
+      className={cn("relative", className)}
+      style={fill ? { position: "absolute", inset: 0 } : undefined}
+    >
       <Image
         src={src}
         alt={alt ?? "Background of a beautiful view"}
@@ -303,10 +307,9 @@ export const BlurImage = ({
       <style jsx>{`
         div :global(img) {
           transition: filter 300ms;
-          filter: ${isLoading ? 'blur(8px)' : 'none'};
+          filter: ${isLoading ? "blur(8px)" : "none"};
         }
       `}</style>
     </div>
   );
 };
-
