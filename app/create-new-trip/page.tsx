@@ -24,12 +24,14 @@ function CreateNewTrip() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-10">
       <div>
-        <ChatBox></ChatBox>
+        <ChatBox setActiveIndex={setActiveIndex} />
       </div>
+
       <div className="col-span-2 relative">
-        {activeIndex === 0 ? <Itinerary></Itinerary> : <GlobalMap></GlobalMap>}
+        {activeIndex === 0 ? <Itinerary /> : <GlobalMap />}
+
         <div
-          className={` pointer-events-none absolute w-full flex justify-center ${
+          className={`pointer-events-none absolute w-full flex justify-center ${
             activeIndex === 0 ? "bottom-20" : "bottom-10"
           }`}
         >
@@ -37,14 +39,14 @@ function CreateNewTrip() {
             <TooltipTrigger>
               <Button
                 size="lg"
-                className=" pointer-events-auto bg-black hover:bg-gray-500 cursor-pointer"
-                onClick={() => setActiveIndex(activeIndex == 0 ? 1 : 0)}
+                className="pointer-events-auto bg-black hover:bg-gray-500"
+                onClick={() => setActiveIndex(activeIndex === 0 ? 1 : 0)}
               >
                 {activeIndex === 0 ? <Plane /> : <Globe2 />}
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p> Switch Between Trip and Map</p>
+              <p>Switch Between Trip and Map</p>
             </TooltipContent>
           </Tooltip>
         </div>

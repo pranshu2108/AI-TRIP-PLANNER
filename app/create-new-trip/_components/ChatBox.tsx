@@ -62,10 +62,18 @@ export type Itinerary = {
   day_plan: string;
   best_time_to_visit_day: string;
   activities: Activity[];
-}
+};
 
+type ChatBoxProps = {
+  setActiveIndex?: (index: number) => void;
+};
 
-function ChatBox() {
+function ChatBox({ setActiveIndex }: ChatBoxProps) {
+  const onTripGenerated = () => {
+    // when AI finishes or Final UI is reached
+    setActiveIndex?.(0); // 👈 switch to Itinerary
+  };
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [userInput, setUserInput] = useState<string>("");
   const [Loading, setLoading] = useState(false);
@@ -75,7 +83,10 @@ function ChatBox() {
   const { userDetail, setUserDetail } = useUserDetail();
   //@ts-ignore
   const { tripDetailInfo, setTripDetailInfo } = useTripDetail();
-  const onSend = async (overrideMessage?: string) => {
+  const onSend = async (
+    overrideMessage?: string,
+    options?: { silent?: boolean },
+  ) => {
     console.log("onSend triggered");
     const finalMessage = (overrideMessage ?? userInput)?.trim();
     if (!finalMessage) return;
@@ -88,7 +99,10 @@ function ChatBox() {
       content: finalMessage,
     };
     console.log("New Message:", newMsg);
-    setMessages((prev) => [...prev, newMsg]);
+    if (!options?.silent) {
+      setMessages((prev) => [...prev, newMsg]);
+    }
+
     console.log("isFinal", isFinal);
     const result = await axios.post("/api/aimodel", {
       messages: [...messages, newMsg],
@@ -147,7 +161,7 @@ function ChatBox() {
         />
       );
     } else if (ui === "Final") {
-      return <FinalUi viewTrip={() => console.log()} disable={!tripDetail} />;
+      return <FinalUi viewTrip={onTripGenerated} disable={!tripDetail} />;
     }
     return null;
   };
@@ -173,7 +187,7 @@ function ChatBox() {
 
   useEffect(() => {
     if (isFinal) {
-      onSend("__GENERATE_FINAL_PLAN__");
+      onSend("GENERATE FINAL PLAN NOW", { silent: true });
     }
   }, [isFinal]);
 
@@ -204,7 +218,7 @@ function ChatBox() {
                 {RenderGenerativeUi(msg.ui ?? "")}
               </div>
             </div>
-          )
+          ),
         )}
 
         {Loading && (

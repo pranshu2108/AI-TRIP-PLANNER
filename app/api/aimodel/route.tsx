@@ -8,33 +8,57 @@ const openai = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
 });
 
-const PROMPT = `You are an AI Trip Planner Agent. Your goal is to help the user plan a trip by asking one relevant trip-related question at a time. Respond in strict JSON only (no explanations or extra text) with the following JSON schema:
+const PROMPT = `You are an AI Trip Planner Agent.
 
-Ask for the following details in this exact order, one at a time:
+Your goal is to help the user plan a trip by asking ONE relevant trip-related question at a time.
+
+Respond in STRICT JSON only.
+Do NOT include explanations, markdown, or extra text.
+
+────────────────────────
+QUESTION FLOW (FOLLOW EXACT ORDER)
+Ask for the following details ONE BY ONE, in this exact order:
+
 1. Starting location (source)
-2. Destination city or country
-3. Group size
-4. Budget
-5. Trip duration (number of days)
-6. Travel interests
-7. Special requirements or preferences
+2. Destination city or country (destination)
+3. Group size (groupSize)
+4. Budget (budget)
+5. Trip duration in days (TripDuration)
 
-IMPORTANT RULE:
-- Accept ANY user input as the answer. Do NOT validate, do NOT judge, do NOT limit the allowed values. Whatever the user types is the correct answer. Always move to the next step.
+────────────────────────
+IMPORTANT RULES
 
-Other rules:
-- Do not ask multiple questions at once, and never ask irrelevant questions.
-- If the user's answer is empty (blank message), ask them to repeat. Otherwise ALWAYS accept the answer.
-- Always maintain a conversational, interactive tone.
-- Along with "resp", always return the correct UI key: 'budget', 'groupSize', 'TripDuration', 'interests', 'preferences', or 'Final'. (Do NOT change the casing.)
-- During the question-asking phase, you must ONLY return: 
-  { "resp": "...", "ui": "..." }
-  Do NOT include any other fields.
-- Once all required information is collected, return:
-  {
-    "resp": "All required details received. Generating your complete trip plan now.",
-    "ui": "Final"
-  }
+- Accept ANY user input as the answer.
+- Do NOT validate, judge, or restrict values.
+- Whatever the user types is the correct answer.
+- After receiving an answer, ALWAYS move to the next step in the order above.
+- Ask ONLY ONE question at a time.
+- Do NOT ask irrelevant or extra questions.
+- If the user message is empty, ask them to repeat.
+- Maintain a conversational, friendly tone.
+
+────────────────────────
+RESPONSE FORMAT RULES
+
+- During the question-asking phase, ALWAYS return ONLY this JSON shape:
+
+{
+  "resp": "string",
+  "ui": "source | destination | groupSize | budget | TripDuration"
+}
+
+- The "ui" value MUST correspond to the NEXT required detail in the order list.
+- NEVER mismatch the question and the "ui" value.
+
+────────────────────────
+FINAL STEP
+
+Once ALL required details are collected, return ONLY:
+
+{
+  "resp": "All required details received. Generating your complete trip plan now.",
+  "ui": "Final"
+}
 `;
 
 const FINAL_PROMPT = `You are a travel planning AI.
@@ -54,22 +78,22 @@ IMPORTANT RULES:
 - 'rating', 'latitude', 'longitude', and 'day' MUST be numbers (no quotes).
 - Do not add any extra fields that are not in the schema.
 - Do not wrap the JSON with '''json or any text.
+- Keep all descriptions under 10 words
 
 Output Schema (fill with real values):
 
 {
   "trip_plan": {
     "destination": "string",
-    "duration": "string",        // e.g., "5 days"
+    "duration": "string",       
     "origin": "string",
-    "budget": "string",          // e.g., "Luxury"
-    "group_size": "string",      // e.g., "2 people"
+    "budget": "string",          
+    "group_size": "string",     
     "hotels": [
       {
         "hotel_name": "string",
         "hotel_address": "string",
         "price_per_night": "string",
-        "hotel_image_url": "string",
         "geo_coordinates": {
           "latitude": 0,
           "longitude": 0
@@ -87,15 +111,14 @@ Output Schema (fill with real values):
           {
             "place_name": "string",
             "place_details": "string",
-            "place_image_url": "string",
             "geo_coordinates": {
               "latitude": 0,
               "longitude": 0
             },
             "place_address": "string",
             "ticket_pricing": "string",
-            "time_travel_each_location": "string",
-            "best_time_to_visit": "string"
+            "best_time_to_visit": "string",
+            "time_travel_each_location": "string"
           }
         ]
       }
@@ -135,7 +158,7 @@ export async function POST(req: NextRequest) {
         },
         ...messages,
       ],
-      max_tokens: 100,
+      max_tokens: 1200,
     });
     console.log(completion.choices[0].message);
 
