@@ -1,36 +1,204 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌍 AI Trip Planner
 
-## Getting Started
+An AI-powered travel planning application that creates personalized trip itineraries through a conversational AI experience. Users simply answer a few questions about their trip, and the application generates a complete travel plan with destinations, hotels, activities, and maps.
 
-First, run the development server:
+> **Live Demo:** https://ai-trip-planner-steel.vercel.app/
+
+---
+
+## ✨ Features
+
+- 🤖 AI-powered conversational trip planning
+- 🌍 Personalized travel itinerary generation
+- 🏨 Hotel recommendations
+- 📍 Places to visit
+- 🗺️ Interactive map integration with Mapbox
+- 👥 Group-based trip planning
+- 💰 Budget selection
+- 📅 Trip duration planning
+- 🔐 User authentication using Clerk
+- 💾 Save and view previously generated trips
+- ⚡ Fast and responsive UI
+- 🛡️ API protection using Arcjet
+
+---
+
+## 🚀 Tech Stack
+
+### Frontend
+
+- Next.js 15 (App Router)
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Magic UI
+
+### Backend
+
+- Next.js API Routes
+- Convex Database
+
+### AI
+
+- OpenRouter API
+- OpenAI SDK
+
+### Authentication
+
+- Clerk
+
+### Maps
+
+- Mapbox GL
+
+### Deployment
+
+- Vercel
+
+---
+
+## 📸 Screenshots
+
+### Home Page
+
+![Home](./screenshots/home.png)
+
+---
+
+### AI Chat
+
+![AI Chat](./screenshots/ai-chat.png)
+
+---
+
+### Generated Itinerary
+
+![Trip](./screenshots/itinerary.png)
+
+---
+
+### My Trips
+
+![Trips](./screenshots/my-trips.png)
+
+## 🛠 Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/pranshu2108/AI-TRIP-PLANNER.git
+```
+
+Move into the project
+
+```bash
+cd AI-TRIP-PLANNER
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Start the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🔑 Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+Create a `.env.local` file in the root directory.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```env
+OPENROUTER_API_KEY=
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+NEXT_PUBLIC_CONVEX_URL=
 
-## Deploy on Vercel
+NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+ARCJET_KEY=
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> Replace the above values with your own credentials.
+
+---
+
+## 📂 Project Structure
+
+```
+AI-TRIP-PLANNER
+│
+├── app
+│   ├── api
+│   ├── create-new-trip
+│   ├── my-trips
+│   ├── pricing
+│   ├── view-trip
+│   └── _components
+│
+├── components
+│
+├── convex
+│
+├── context
+│
+├── hooks
+│
+├── lib
+│
+├── public
+│
+└── README.md
+```
+
+---
+
+## ⚙️ How It Works
+
+1. User signs in using Clerk.
+2. AI asks a series of questions about the trip.
+3. User provides:
+   - Starting location
+   - Destination
+   - Group size
+   - Budget
+   - Trip duration
+4. The application sends the information to the AI model through the OpenRouter API.
+5. AI generates a personalized travel itinerary.
+6. The itinerary is stored in Convex.
+7. Users can revisit their saved trips anytime.
+
+---
+
+## 🌟 Key Highlights
+
+- Conversational AI workflow
+- Structured JSON responses from the AI
+- Secure authentication
+- Persistent trip storage
+- Interactive maps
+- Responsive design
+- Modern Next.js architecture
+
+---
+
+## 👨‍💻 Author
+
+**Pranshu Sharma**
+
+GitHub: https://github.com/pranshu2108
+
+Project: https://ai-trip-planner-steel.vercel.app/
